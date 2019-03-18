@@ -56,8 +56,7 @@ class RingBuffer(object):
                     self.top = 0
                 else:
                     for k in other_rb.keys():
-                        self.data[k] = torch.zeros(self.max_steps,
-                                                   *other_rb[k][0].shape)
+                        self._append(other_rb[k][0], key=k)  # for allocation
                         self.data[k][:other_rb.num_step] = other_rb[k]
                     self.top = other_rb.num_step
             else:
