@@ -2,12 +2,16 @@ from collections import defaultdict
 
 import torch
 
+LARGE_NUMBER = 1000000000000
+
 
 class RingBuffer(object):
 
-    def __init__(self, max_steps,
+    def __init__(self, max_steps=None,
                  default_buffer_length=1024):
-        self.max_steps = max_steps
+        self.max_steps = max_steps if max_steps is not None \
+            else LARGE_NUMBER
+
         if self.max_steps <= 0:
             raise ValueError('max_steps should be greater than 0. '
                              'but get {}'.format(self.max_steps))
@@ -42,7 +46,8 @@ class RingBuffer(object):
         else:
             return self.data[key][:self.top]
 
-    def _update_allocate_buffer(self, key, min_data_length):
+    def _update_allocate_buffer(self, key, min_data_length,
+                                shape=None):
         if min_data_length < self.buffer_length[key]:
             return
         min_data_length = min(min_data_length, self.max_steps)
@@ -53,9 +58,11 @@ class RingBuffer(object):
         while next_buffer_length <= min_data_length:
             next_buffer_length = next_buffer_length * 2
         next_buffer_length = min(next_buffer_length, self.max_steps)
+        if shape is None:
+            shape = self.shape[key]
         self.data[key] = torch.cat([
             self[key], torch.zeros(next_buffer_length - self.top,
-                                   *self.shape[key])])
+                                   *shape)])
         self.buffer_length[key] = next_buffer_length
 
     def _append(self, x, key=None):
@@ -132,12 +139,12 @@ class RingBuffer(object):
                 key = ['{}-{}'.format(key, index)
                        for index in range(len(data))]
             for (k, d) in zip(key, data):
-                self._update_allocate_buffer(k, self.top)
+                self._update_allocate_buffer(k, self.top, d.shape)
                 self._append(d, k)
             self.top += 1
             self.num_step += 1
         else:
-            self._update_allocate_buffer(key, self.top)
+            self._update_allocate_buffer(key, self.top, data.shape)
             self._append(data, key)
             self.top += 1
             self.num_step += 1
