@@ -101,18 +101,13 @@ class RingBuffer(object):
                             self._update_allocate_buffer(k, add_num_step)
                             self.data[k][:add_num_step] = other_rb[k]
                         else:
-                            if (self.top + other_rb.num_step) < self.max_steps:
-                                self.data[k][self.top:
-                                             self.top + add_num_step] = \
-                                    other_rb[k]
-                            else:
-                                other_data = other_rb[k]
-                                self._update_allocate_buffer(k, self.max_steps)
-                                self.data[k][self.top:
-                                             self.max_steps] = \
-                                    other_data[:self.max_steps - self.top]
-                                self.data[k][:next_top] = \
-                                    other_data[self.max_steps - self.top:]
+                            other_data = other_rb[k]
+                            self._update_allocate_buffer(k, self.max_steps)
+                            self.data[k][self.top:
+                                         self.max_steps] = \
+                                other_data[:self.max_steps - self.top]
+                            self.data[k][:next_top] = \
+                                other_data[self.max_steps - self.top:]
                 else:
                     for k in other_rb.keys():
                         self._update_allocate_buffer(
