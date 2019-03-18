@@ -5,14 +5,19 @@ import torch
 
 class RingBuffer(object):
 
-    def __init__(self, max_steps):
+    def __init__(self, max_steps,
+                 default_buffer_length=1024):
         self.max_steps = max_steps
         if self.max_steps <= 0:
             raise ValueError('max_steps should be greater than 0. '
                              'but get {}'.format(self.max_steps))
         self.num_step = 0
         self.top = 0
+        self.shape = defaultdict(lambda: None)
         self.data = defaultdict(lambda: None)
+        default_buffer_length = min(default_buffer_length, self.max_steps)
+        self.buffer_length = defaultdict(
+            lambda: default_buffer_length)
 
     def to(self, device):
         for value in self.data.values():
@@ -37,9 +42,27 @@ class RingBuffer(object):
         else:
             return self.data[key][:self.top]
 
+    def _update_allocate_buffer(self, key, min_data_length):
+        if min_data_length < self.buffer_length[key]:
+            return
+        min_data_length = min(min_data_length, self.max_steps)
+        current_buffer_length = self.buffer_length[key]
+        if current_buffer_length == self.max_steps:
+            return
+        next_buffer_length = current_buffer_length
+        while next_buffer_length <= min_data_length:
+            next_buffer_length = next_buffer_length * 2
+        next_buffer_length = min(next_buffer_length, self.max_steps)
+        self.data[key] = torch.cat([
+            self[key], torch.zeros(next_buffer_length - self.top,
+                                   *self.shape[key])])
+        self.buffer_length[key] = next_buffer_length
+
     def _append(self, x, key=None):
         if self.data[key] is None:
-            self.data[key] = torch.zeros(self.max_steps, *x.shape)
+            self.data[key] = torch.zeros(
+                self.buffer_length[key], *x.shape)
+            self.shape[key] = x.shape
         self.data[key][self.top] = x
 
     def append(self, data, key=None):
@@ -48,15 +71,18 @@ class RingBuffer(object):
             other_rb = data
             if other_rb.num_step == 0:  # not initialized
                 return
-            elif self.num_step == 0:
+            elif self.num_step == 0:  # self is not initialized case
                 self.num_step = other_rb.num_step
                 if self.max_steps <= other_rb.num_step:
                     for k in other_rb.keys():
+                        self._append(other_rb[k][0], key=k)  # for allocation
+                        self._update_allocate_buffer(k, other_rb.num_step)
                         self.data[k] = other_rb[k][-self.max_steps:]
                     self.top = 0
                 else:
                     for k in other_rb.keys():
                         self._append(other_rb[k][0], key=k)  # for allocation
+                        self._update_allocate_buffer(k, other_rb.num_step)
                         self.data[k][:other_rb.num_step] = other_rb[k]
                     self.top = other_rb.num_step
             else:
@@ -65,10 +91,14 @@ class RingBuffer(object):
                 next_top = (self.top + other_rb.num_step) % self.max_steps
                 if total_step < self.max_steps:
                     for k in other_rb.keys():
+                        self._update_allocate_buffer(k, next_top)
                         self.data[k][self.top:next_top] = other_rb[k]
                 elif add_num_step <= self.max_steps:
                     for k in other_rb.keys():
+                        self._update_allocate_buffer(
+                            k, self.max_steps)
                         if self.top == 0:
+                            self._update_allocate_buffer(k, add_num_step)
                             self.data[k][:add_num_step] = other_rb[k]
                         else:
                             if (self.top + other_rb.num_step) < self.max_steps:
@@ -77,6 +107,7 @@ class RingBuffer(object):
                                     other_rb[k]
                             else:
                                 other_data = other_rb[k]
+                                self._update_allocate_buffer(k, self.max_steps)
                                 self.data[k][self.top:
                                              self.max_steps] = \
                                     other_data[:self.max_steps - self.top]
@@ -84,6 +115,8 @@ class RingBuffer(object):
                                     other_data[self.max_steps - self.top:]
                 else:
                     for k in other_rb.keys():
+                        self._update_allocate_buffer(
+                            k, self.max_steps)
                         other_data = other_rb[k]
                         if next_top == 0:
                             self.data[k] = other_data[-self.max_steps:]
@@ -94,17 +127,19 @@ class RingBuffer(object):
                 self.top = next_top
                 self.num_step = total_step
         elif t is tuple or t is list:
+            key_type = type(key)
             if key is None:
                 key = list(range(len(data)))
-            key_type = type(key)
-            if not (key_type is tuple or t is list):
+            elif not (key_type is tuple or t is list):
                 key = ['{}-{}'.format(key, index)
                        for index in range(len(data))]
             for (k, d) in zip(key, data):
+                self._update_allocate_buffer(k, self.top)
                 self._append(d, k)
             self.top += 1
             self.num_step += 1
         else:
+            self._update_allocate_buffer(key, self.top)
             self._append(data, key)
             self.top += 1
             self.num_step += 1
