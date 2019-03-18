@@ -97,6 +97,10 @@ class RingBuffer(object):
         elif t is tuple or t is list:
             if key is None:
                 key = list(range(len(data)))
+            key_type = type(key)
+            if not (key_type is tuple or t is list):
+                key = ['{}-{}'.format(key, index)
+                       for index in range(len(data))]
             for (k, d) in zip(key, data):
                 self._append(d, k)
             self.top += 1
