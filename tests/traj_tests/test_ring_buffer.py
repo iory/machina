@@ -16,8 +16,8 @@ class TestRingBuffer(unittest.TestCase):
             rb.append(torch.ones(1) * i)
 
         testing.assert_almost_equal(
-            rb.data[None].numpy(),
-            np.array([[10], [6], [7], [8], [9]], 'f'))
+            rb[None].numpy(),
+            np.array([[6], [7], [8], [9], [10]], 'f'))
 
         # append with key
         rb = RingBuffer(5)
@@ -25,8 +25,8 @@ class TestRingBuffer(unittest.TestCase):
             rb.append(torch.ones(1) * i, key='data')
 
         testing.assert_almost_equal(
-            rb.data['data'].numpy(),
-            np.array([[10], [6], [7], [8], [9]], 'f'))
+            rb['data'].numpy(),
+            np.array([[6], [7], [8], [9], [10]], 'f'))
 
         # append tuple data
         rb = RingBuffer(5)
@@ -34,12 +34,12 @@ class TestRingBuffer(unittest.TestCase):
             rb.append((torch.ones(1) * i, torch.ones(1, 1, 1) * i))
 
         testing.assert_almost_equal(
-            rb.data[0].numpy(),
-            np.array([[10], [6], [7], [8], [9]], 'f'))
+            rb[0].numpy(),
+            np.array([[6], [7], [8], [9], [10]], 'f'))
 
         testing.assert_almost_equal(
-            rb.data[1].numpy(),
-            np.array([[[[10]]], [[[6]]], [[[7]]], [[[8]]], [[[9]]]], 'f'))
+            rb[1].numpy(),
+            np.array([[[[6]]], [[[7]]], [[[8]]], [[[9]]], [[[10]]]], 'f'))
 
         # append tuple data with key
         rb = RingBuffer(5)
@@ -48,12 +48,12 @@ class TestRingBuffer(unittest.TestCase):
                       key=('vec', 'image'))
 
         testing.assert_almost_equal(
-            rb.data['vec'].numpy(),
-            np.array([[10], [6], [7], [8], [9]], 'f'))
+            rb['vec'].numpy(),
+            np.array([[6], [7], [8], [9], [10]], 'f'))
 
         testing.assert_almost_equal(
-            rb.data['image'].numpy(),
-            np.array([[[[10]]], [[[6]]], [[[7]]], [[[8]]], [[[9]]]], 'f'))
+            rb['image'].numpy(),
+            np.array([[[[6]]], [[[7]]], [[[8]]], [[[9]]], [[[10]]]], 'f'))
 
         # key
         rb = RingBuffer(4)
@@ -198,3 +198,41 @@ class TestRingBuffer(unittest.TestCase):
         testing.assert_almost_equal(
             rb_a['vec'].numpy(),
             np.array([[0], [9]], 'f'))
+
+        # next_top == 0 case
+        rb_a = RingBuffer(1)
+        rb_a.append(torch.ones(1) * 0, key='vec')
+        rb_b = RingBuffer(6)
+        for i in range(6):
+            rb_b.append(torch.ones(1) * i, key='vec')
+        rb_a.append(rb_b)
+
+        # memory allocation test
+        rb = RingBuffer(2056, default_buffer_length=8)
+        for i in range(3000):
+            rb.append(torch.ones(1) * i, key='data')
+        testing.assert_almost_equal(
+            rb['data'].numpy(),
+            np.arange(3000 - 2056, 3000).reshape(-1, 1))
+
+        rb_a = RingBuffer(2056, default_buffer_length=8)
+        for i in range(3000):
+            rb_a.append((torch.ones(1) * i, torch.ones(1, 1, 1)),
+                        key='obs')
+        testing.assert_almost_equal(
+            rb_a['obs-0'].numpy(),
+            np.arange(3000 - 2056, 3000).reshape(-1, 1))
+
+        rb_b = RingBuffer(1024, default_buffer_length=8)
+        rb_b.append(rb_a)
+        testing.assert_almost_equal(
+            rb_b['obs-0'].numpy(),
+            np.arange(3000 - 1024, 3000).reshape(-1, 1))
+
+        rb_b = RingBuffer(1024, default_buffer_length=8)
+        for i in range(13):
+            rb_b.append((torch.ones(1) * i, torch.ones(1, 1, 1)), key='obs')
+        rb_b.append(rb_a)
+        testing.assert_almost_equal(
+            rb_b['obs-0'].numpy(),
+            np.arange(3000 - 1024, 3000).reshape(-1, 1))
