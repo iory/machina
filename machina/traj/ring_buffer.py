@@ -109,6 +109,9 @@ class RingBuffer(object):
                             self.data[k][:next_top] = \
                                 other_data[self.max_steps - self.top:]
                 else:
+                    # case of
+                    # total_step >= self.max_steps
+                    # add_num_step > self.max_steps
                     for k in other_rb.keys():
                         self._update_allocate_buffer(
                             k, self.max_steps)
