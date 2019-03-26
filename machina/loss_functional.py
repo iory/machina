@@ -647,30 +647,27 @@ def cross_ent(discrim, batch, expert_or_agent, ent_beta):
     return discrim_loss
 
 
-def density_ratio_rew_cross_ent(rewf, shaping_vf, pol, batch, expert_or_agent, gamma):
-    obs = batch['obs']
-    acs = batch['acs']
-    next_obs = batch['next_obs']
-    dones = batch['dones']
-    vs, _ = shaping_vf(obs)
-    rews, _ = rewf(obs)
-    next_vs, _ = shaping_vf(next_obs)
-    energies = rews + (1 - dones) * gamma * next_vs - vs
-    with torch.no_grad():
-        _, _, params = pol(obs)
-        llhs = pol.pd.llh(acs, params)
-    logits = energies - llhs
-    len = obs.shape[0]
-    discrim_loss = F.binary_cross_entropy_with_logits(
-        logits, torch.ones(len, device=get_device())*expert_or_agent)
+def cross_ent_diayn(discrim, batch, num_skill):
+    obs = batch['obs'][:, :-num_skill]
+    skill = batch['obs'][:, -num_skill:]
+    _, targets = skill.max(dim=1)
+    logits, _ = discrim(obs)
+    discrim_loss = F.cross_entropy(logits, targets)
     return discrim_loss
 
 
-def density_ratio_adv_cross_ent(advf, pol, batch, expert_or_agent):
+def density_ratio_cross_ent(pol, batch, expert_or_agent, gamma, rewf=None, shaping_vf=None, advf=None):
     obs = batch['obs']
     acs = batch['acs']
-    advs, _ = advf(obs, acs)
-    energies = advs
+    if rewf is not None and shaping_vf is not None:
+        next_obs = batch['next_obs']
+        dones = batch['dones']
+        vs, _ = shaping_vf(obs)
+        rews, _ = rewf(obs)
+        next_vs, _ = shaping_vf(next_obs)
+        energies = rews + (1 - dones) * gamma * next_vs - vs
+    elif advf is not None:
+        energies, _ = advf(obs, acs)
     with torch.no_grad():
         _, _, params = pol(obs)
         llhs = pol.pd.llh(acs, params)
