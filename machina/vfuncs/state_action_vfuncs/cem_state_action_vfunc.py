@@ -183,7 +183,8 @@ class CEMDeterministicSAVfunc(DeterministicSAVfunc):
             mean = best_samples.mean(dim=0)
             fs_m = best_samples.sub(mean.expand_as(best_samples))
             cov_mat = fs_m.transpose(0, 1).mm(fs_m) / (self.num_sampling - 1)
-            cov_mat = cov_mat + self.delta * torch.eye(cov_mat.shape[0])
+            cov_mat = cov_mat + self.delta * torch.eye(cov_mat.shape[0],
+                                                       device=get_device())
             pd = MultivariateNormal(mean, cov_mat)
             samples = pd.sample((self.num_sampling,))
             return samples
