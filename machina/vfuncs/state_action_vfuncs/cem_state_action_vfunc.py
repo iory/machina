@@ -67,8 +67,8 @@ class CEMDeterministicSAVfunc(DeterministicSAVfunc):
                             dtype=torch.float, device=get_device())
         low = torch.tensor(
             self.action_space.low, dtype=torch.float, device=get_device())
-        init_samples = torch.linspace(
-            0, 1, self.num_sampling, device=get_device())
+        init_samples = torch.rand(
+            self.num_sampling * len(low), device=get_device())
         init_samples = init_samples.reshape(
             self.num_sampling, -1) * (high - low) + low  # (self.num_sampling, dim_ac)
         init_samples = self._clamp(init_samples)
