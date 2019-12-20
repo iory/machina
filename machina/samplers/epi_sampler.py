@@ -52,13 +52,13 @@ def one_epi(env, pol, deterministic=False, prepro=None):
             else:
                 ac_real, ac, a_i = pol.deterministic_ac_real(
                     torch.tensor(o, dtype=torch.float))
-            ac_real = ac_real.reshape(pol.ac_space.shape)
+            ac_real = ac_real.reshape(pol.action_space.shape)
             next_o, r, done, e_i = env.step(np.array(ac_real))
             obs.append(o)
             rews.append(r)
             dones.append(done)
             acs.append(ac.squeeze().detach().cpu(
-            ).numpy().reshape(pol.ac_space.shape))
+            ).numpy().reshape(pol.action_space.shape))
             _a_i = dict()
             for key in a_i.keys():
                 if a_i[key] is None:
@@ -88,7 +88,7 @@ def one_epi(env, pol, deterministic=False, prepro=None):
         )
 
 
-def mp_sample(pol, env, max_steps, max_epis, n_steps_global, n_epis_global, epis, exec_flags, deterministic_flag, process_id, prepro=None, seed=256):
+def mp_sample(pol, env, max_steps, max_epis, n_steps_global, n_epis_global, epis, exec_flag, deterministic_flag, process_id, prepro=None, seed=256):
     """
     Multiprocess sample.
     Sampling episodes until max_steps or max_epis is achieved.
@@ -107,7 +107,7 @@ def mp_sample(pol, env, max_steps, max_epis, n_steps_global, n_epis_global, epis
         shared Tensor
     epis : list
         multiprocessing's list for sharing episodes between processes.
-    exec_flags : list of torch.Tensor
+    exec_flag : torch.Tensor
         execution flag
     deterministic_flag : torch.Tensor
     process_id : int
@@ -121,13 +121,13 @@ def mp_sample(pol, env, max_steps, max_epis, n_steps_global, n_epis_global, epis
 
     while True:
         time.sleep(0.1)
-        if exec_flags[process_id] > 0:
+        if exec_flag > 0:
             while max_steps > n_steps_global and max_epis > n_epis_global:
                 l, epi = one_epi(env, pol, deterministic_flag, prepro)
                 n_steps_global += l
                 n_epis_global += 1
                 epis.append(epi)
-            exec_flags[process_id].zero_()
+            exec_flag.zero_()
 
 
 class EpiSampler(object):
@@ -167,7 +167,7 @@ class EpiSampler(object):
         self.processes = []
         for ind in range(self.num_parallel):
             p = mp.Process(target=mp_sample, args=(self.pol, env, self.max_steps, self.max_epis, self.n_steps_global,
-                                                   self.n_epis_global, self.epis, self.exec_flags, self.deterministic_flag, ind, prepro, seed))
+                                                   self.n_epis_global, self.epis, self.exec_flags[ind], self.deterministic_flag, ind, prepro, seed))
             p.start()
             self.processes.append(p)
 

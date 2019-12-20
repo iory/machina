@@ -12,29 +12,25 @@ class DeterministicActionNoisePol(BasePol):
 
     Parameters
     ----------
-    ob_space : gym.Space
+    observation_space : gym.Space
         observation's space
-    ac_space : gym.Space
+    action_space : gym.Space
         action's space.
         This should be gym.spaces.Box
     net : torch.nn.Module
     noise : Noise
     rnn : bool
     normalize_ac : bool
-        If True, the output of network is spreaded for ac_space.
+        If True, the output of network is spreaded for action_space.
         In this situation the output of network is expected to be in -1~1.
-    data_parallel : bool
-        If True, network computation is executed in parallel.
-    parallel_dim : int
-        Splitted dimension in data parallel.
     """
 
-    def __init__(self, ob_space, ac_space, net, noise=None, rnn=False, normalize_ac=True, data_parallel=False, parallel_dim=0):
+    def __init__(self, observation_space, action_space, net, noise=None, rnn=False, normalize_ac=True):
         if rnn:
             raise ValueError(
                 'rnn with DeterministicActionNoisePol is not supported now')
-        BasePol.__init__(self, ob_space, ac_space, net, rnn=rnn, normalize_ac=normalize_ac,
-                         data_parallel=data_parallel, parallel_dim=parallel_dim)
+        BasePol.__init__(self, observation_space, action_space,
+                         net, rnn=rnn, normalize_ac=normalize_ac)
         self.noise = noise
         self.pd = DeterministicPd()
         self.to(get_device())
@@ -47,10 +43,7 @@ class DeterministicActionNoisePol(BasePol):
     def forward(self, obs, no_noise=False):
         obs = self._check_obs_shape(obs)
 
-        if self.dp_run:
-            mean = self.dp_net(obs)
-        else:
-            mean = self.net(obs)
+        mean = self.net(obs)
         ac = mean
 
         if self.noise is not None and not no_noise:

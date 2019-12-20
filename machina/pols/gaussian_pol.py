@@ -13,25 +13,22 @@ class GaussianPol(BasePol):
 
     Parameters
     ----------
-    ob_space : gym.Space
+    observation_space : gym.Space
         observation's space
-    ac_space : gym.Space
+    action_space : gym.Space
         action's space
         This should be gym.spaces.Box
     net : torch.nn.Module
     rnn : bool
     normalize_ac : bool
-        If True, the output of network is spreaded for ac_space.
+        If True, the output of network is spreaded for action_space.
         In this situation the output of network is expected to be in -1~1.
-    data_parallel : bool
-        If True, network computation is executed in parallel.
-    parallel_dim : int
-        Splitted dimension in data parallel.
     """
 
-    def __init__(self, ob_space, ac_space, net, rnn=False, normalize_ac=True, data_parallel=False, parallel_dim=0):
-        BasePol.__init__(self, ob_space, ac_space, net, rnn,
-                         normalize_ac, data_parallel, parallel_dim)
+    def __init__(self, observation_space, action_space, net, rnn=False,
+                 normalize_ac=True):
+        BasePol.__init__(self, observation_space, action_space, net, rnn,
+                         normalize_ac)
         self.pd = GaussianPd()
         self.to(get_device())
 
@@ -44,25 +41,16 @@ class GaussianPol(BasePol):
             if hs is None:
                 if self.hs is None:
                     self.hs = self.net.init_hs(batch_size)
-                if self.dp_run:
-                    self.hs = (self.hs[0].unsqueeze(
-                        0), self.hs[1].unsqueeze(0))
                 hs = self.hs
 
             if h_masks is None:
                 h_masks = hs[0].new(time_seq, batch_size, 1).zero_()
             h_masks = h_masks.reshape(time_seq, batch_size, 1)
 
-            if self.dp_run:
-                mean, log_std, hs = self.dp_net(obs, hs, h_masks)
-            else:
-                mean, log_std, hs = self.net(obs, hs, h_masks)
+            mean, log_std, hs = self.net(obs, hs, h_masks)
             self.hs = hs
         else:
-            if self.dp_run:
-                mean, log_std = self.dp_net(obs)
-            else:
-                mean, log_std = self.net(obs)
+            mean, log_std = self.net(obs)
         log_std = log_std.expand_as(mean)
         ac = self.pd.sample(dict(mean=mean, log_std=log_std))
         ac_real = self.convert_ac_for_real(ac.detach().cpu().numpy())

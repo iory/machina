@@ -1254,12 +1254,15 @@ _header_printed = False
 _running_processes = []
 _async_plot_flag = False
 
+_summary_writer = None
+_global_step = 0
+
 
 def _add_output(file_name, arr, fds, mode='a'):
     if file_name not in arr:
         mkdir_p(os.path.dirname(file_name))
         arr.append(file_name)
-        fds[file_name] = open(file_name, mode)
+        fds[file_name] = open(file_name, mode, newline='')
 
 
 def _remove_output(file_name, arr, fds):
@@ -1285,6 +1288,48 @@ def remove_text_output(file_name):
 
 def add_tabular_output(file_name):
     _add_output(file_name, _tabular_outputs, _tabular_fds, mode='w')
+
+
+def add_tensorboard_output(logdir):
+    try:
+        try:
+            from torch.utils.tensorboard import SummaryWriter
+        except ImportError:
+            from tensorboardX import SummaryWriter
+    except ImportError:
+        print("tensorboard is not available")
+        return
+    global _summary_writer
+    if _summary_writer is not None:
+        print("Currently only support one SummaryWriter")
+        return
+    _summary_writer = SummaryWriter(logdir)
+
+
+def write_to_tensorboard(tabular_dict):
+    if _summary_writer is None:
+        return
+    global _global_step
+    stat_keys = set()
+    normal_keys = []
+    for k in tabular_dict.keys():
+        for j in ["Average", "Std", "Median", "Min", "Max"]:
+            idx = k.find(j)
+            if idx != -1:
+                break
+        if idx != -1:
+            stat_keys.add(k[:idx])
+        else:
+            normal_keys.append(k)
+    for k in normal_keys:
+        _summary_writer.add_scalar(
+            "data/" + k, float(tabular_dict[k]), _global_step)
+    for k in stat_keys:
+        _summary_writer.add_scalars("stat/" + k,
+                                    {k + "Max": float(tabular_dict[k + "Max"]),
+                                     k + "Median": float(tabular_dict[k + "Median"]),
+                                     k + "Min": float(tabular_dict[k + "Min"])}, _global_step)
+    _global_step += 1
 
 
 def remove_tabular_output(file_name):
@@ -1408,11 +1453,15 @@ table_printer = TerminalTablePrinter()
 def dump_tabular(*args, **kwargs):
     wh = kwargs.pop("write_header", None)
     if len(_tabular) > 0:
-        if _log_tabular_only:
-            table_printer.print_tabular(_tabular)
+        no_print = kwargs.pop('no_print', None)
+        if no_print:
+            pass
         else:
-            for line in tabulate(_tabular).split('\n'):
-                log(line, *args, **kwargs)
+            if _log_tabular_only:
+                table_printer.print_tabular(_tabular)
+            else:
+                for line in tabulate(_tabular).split('\n'):
+                    log(line, *args, **kwargs)
         tabular_dict = dict(_tabular)
         # Also write to the csv files
         # This assumes that the keys in each iteration won't change!
@@ -1424,6 +1473,7 @@ def dump_tabular(*args, **kwargs):
                 _tabular_header_written.add(tabular_fd)
             writer.writerow(tabular_dict)
             tabular_fd.flush()
+        write_to_tensorboard(tabular_dict)
         del _tabular[:]
 
 

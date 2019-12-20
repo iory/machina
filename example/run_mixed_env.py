@@ -40,13 +40,14 @@ parser.add_argument('--max_epis', type=int,
 parser.add_argument('--num_parallel', type=int, default=4,
                     help='Number of processes to sample.')
 parser.add_argument('--cuda', type=int, default=-1, help='cuda device number.')
-parser.add_argument('--data_parallel', action='store_true', default=False,
-                    help='If True, inference is done in parallel on gpus.')
 
 parser.add_argument('--max_epis_per_iter', type=int,
                     default=1024, help='Number of episodes in an iteration.')
 parser.add_argument('--epoch_per_iter', type=int, default=10,
                     help='Number of epoch in an iteration')
+parser.add_argument('--batch_size', type=int, default=256)
+parser.add_argument('--rnn', action='store_true',
+                    default=False, help='If True, network is reccurent.')
 parser.add_argument('--rnn_batch_size', type=int, default=8,
                     help='Number of sequences included in batch of rnn.')
 parser.add_argument('--pol_lr', type=float, default=3e-4,
@@ -71,14 +72,14 @@ parser.add_argument('--lam', type=float, default=1,
 args = parser.parse_args()
 
 if not os.path.exists(args.log):
-    os.mkdir(args.log)
+    os.makedirs(args.log)
 
 with open(os.path.join(args.log, 'args.json'), 'w') as f:
     json.dump(vars(args), f)
 pprint(vars(args))
 
 if not os.path.exists(os.path.join(args.log, 'models')):
-    os.mkdir(os.path.join(args.log, 'models'))
+    os.makedirs(os.path.join(args.log, 'models'))
 
 np.random.seed(args.seed)
 torch.manual_seed(args.seed)
@@ -89,6 +90,7 @@ set_device(device)
 
 score_file = os.path.join(args.log, 'progress.csv')
 logger.add_tabular_output(score_file)
+logger.add_tensorboard_output(args.log)
 
 env1 = GymEnv('HumanoidBulletEnv-v0')
 env1.original_env.seed(args.seed)
@@ -102,21 +104,25 @@ env2 = AcInObEnv(env2)
 env2 = RewInObEnv(env2)
 env2 = C2DEnv(env2)
 
-assert env1.ob_space == env2.ob_space
-assert env1.ac_space.shape == env2.ac_space.shape
+assert env1.observation_space == env2.observation_space
+assert env1.action_space.shape == env2.action_space.shape
 
-ob_space = env1.observation_space
-ac_space = env1.action_space
+observation_space = env1.observation_space
+action_space = env1.action_space
 
-pol_net = PolNetLSTM(ob_space, ac_space, h_size=args.h_size,
-                     cell_size=args.cell_size)
+if args.rnn:
+    pol_net = PolNetLSTM(observation_space, action_space, h_size=args.h_size,
+                         cell_size=args.cell_size)
+else:
+    pol_net = PolNet(observation_space, action_space)
+pol = MultiCategoricalPol(observation_space, action_space, pol_net, args.rnn)
 
-pol = MultiCategoricalPol(ob_space, ac_space, pol_net,
-                          True, data_parallel=args.data_parallel, parallel_dim=1)
-
-vf_net = VNetLSTM(ob_space, h_size=args.h_size, cell_size=args.cell_size)
-vf = DeterministicSVfunc(ob_space, vf_net, True,
-                         data_parallel=args.data_parallel, parallel_dim=1)
+if args.rnn:
+    vf_net = VNetLSTM(observation_space, h_size=args.h_size,
+                      cell_size=args.cell_size)
+else:
+    vf_net = VNet(observation_space)
+vf = DeterministicSVfunc(observation_space, vf_net, args.rnn)
 
 sampler1 = EpiSampler(
     env1, pol, num_parallel=args.num_parallel, seed=args.seed)
@@ -155,16 +161,8 @@ while args.max_epis > total_epi:
 
         traj1.add_traj(traj2)
 
-        if args.data_parallel:
-            pol.dp_run = True
-            vf.dp_run = True
-
         result_dict = ppo_clip.train(traj=traj1, pol=pol, vf=vf, clip_param=args.clip_param,
                                      optim_pol=optim_pol, optim_vf=optim_vf, epoch=args.epoch_per_iter, batch_size=args.batch_size if not args.rnn else args.rnn_batch_size, max_grad_norm=args.max_grad_norm)
-
-        if args.data_parallel:
-            pol.dp_run = False
-            vf.dp_run = False
 
     total_epi += traj1.num_epi
     step = traj1.num_step
@@ -200,4 +198,5 @@ while args.max_epis > total_epi:
         args.log, 'models', 'optim_vf_last.pkl'))
     del traj1
     del traj2
-del sampler
+del sampler1
+del sampler2

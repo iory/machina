@@ -62,8 +62,6 @@ parser.add_argument('--max_epis', type=int,
 parser.add_argument('--num_parallel', type=int, default=4,
                     help='Number of processes to sample.')
 parser.add_argument('--cuda', type=int, default=-1, help='cuda device number.')
-parser.add_argument('--data_parallel', action='store_true', default=False,
-                    help='If True, inference is done in parallel on gpus.')
 parser.add_argument('--pybullet_env', action='store_true', default=True)
 
 parser.add_argument('--num_random_rollouts', type=int, default=60,
@@ -87,14 +85,14 @@ parser.add_argument('--rnn_batch_size', type=int, default=8,
 args = parser.parse_args()
 
 if not os.path.exists(args.log):
-    os.mkdir(args.log)
+    os.makedirs(args.log)
 
 with open(os.path.join(args.log, 'args.json'), 'w') as f:
     json.dump(vars(args), f)
 pprint(vars(args))
 
 if not os.path.exists(os.path.join(args.log, 'models')):
-    os.mkdir(os.path.join(args.log, 'models'))
+    os.makedirs(os.path.join(args.log, 'models'))
 
 np.random.seed(args.seed)
 torch.manual_seed(args.seed)
@@ -108,6 +106,7 @@ if args.pybullet_env:
 
 score_file = os.path.join(args.log, 'progress.csv')
 logger.add_tabular_output(score_file)
+logger.add_tensorboard_output(args.log)
 
 env = GymEnv(args.env_name, log_dir=os.path.join(
     args.log, 'movie'), record_video=args.record)
@@ -115,10 +114,10 @@ env.env.seed(args.seed)
 if args.c2d:
     env = C2DEnv(env)
 
-ob_space = env.observation_space
-ac_space = env.action_space
+observation_space = env.observation_space
+action_space = env.action_space
 
-random_pol = RandomPol(ob_space, ac_space)
+random_pol = RandomPol(observation_space, action_space)
 
 ######################
 ### Model-Based RL ###
@@ -146,12 +145,11 @@ del rand_sampler
 
 # initialize dynamics model and mpc policy
 if args.rnn:
-    dm_net = ModelNetLSTM(ob_space, ac_space)
+    dm_net = ModelNetLSTM(observation_space, action_space)
 else:
-    dm_net = ModelNet(ob_space, ac_space)
-dm = DeterministicSModel(ob_space, ac_space, dm_net, args.rnn,
-                         data_parallel=args.data_parallel, parallel_dim=1 if args.rnn else 0)
-mpc_pol = MPCPol(ob_space, ac_space, dm_net, rew_func,
+    dm_net = ModelNet(observation_space, action_space)
+dm = DeterministicSModel(observation_space, action_space, dm_net, args.rnn)
+mpc_pol = MPCPol(observation_space, action_space, dm_net, rew_func,
                  args.n_samples, args.horizon_of_samples,
                  mean_obs, std_obs, mean_acs, std_acs, args.rnn)
 optim_dm = torch.optim.Adam(dm_net.parameters(), args.dm_lr)
@@ -169,7 +167,7 @@ while args.max_epis > total_epi:
         result_dict = mpc.train_dm(
             traj, dm, optim_dm, epoch=args.epoch_per_iter, batch_size=args.batch_size if not args.rnn else args.rnn_batch_size)
     with measure('sample'):
-        mpc_pol = MPCPol(ob_space, ac_space, dm.net, rew_func,
+        mpc_pol = MPCPol(observation_space, action_space, dm.net, rew_func,
                          args.n_samples, args.horizon_of_samples,
                          mean_obs, std_obs, mean_acs, std_acs, args.rnn)
         epis = rl_sampler.sample(

@@ -16,13 +16,19 @@ class TestTraj(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.env = GymEnv('Pendulum-v0')
-        pol = RandomPol(cls.env.ob_space, cls.env.ac_space)
+        pol = RandomPol(cls.env.observation_space, cls.env.action_space)
         sampler = EpiSampler(cls.env, pol, num_parallel=1)
         epis = sampler.sample(pol, max_steps=32)
 
         cls.traj = Traj()
         cls.traj.add_epis(epis)
         cls.traj.register_epis()
+
+    def test_add_traj(self):
+        new_traj = Traj()
+        new_traj.add_traj(self.traj)
+        assert new_traj.num_epi == self.traj.num_epi
+        assert new_traj.num_step == self.traj.num_step
 
     def test_random_batch_once(self):
         batch_size = 32

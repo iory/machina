@@ -16,17 +16,13 @@ class DeterministicSVfunc(BaseSVfunc):
 
     Parameters
     ----------
-    ob_space : gym.Space
+    observation_space : gym.Space
     net : torch.nn.Module
     rnn : bool
-    data_parallel : bool
-        If True, network computation is executed in parallel.
-    parallel_dim : int
-        Splitted dimension in data parallel.
     """
 
-    def __init__(self, ob_space, net, rnn=False, data_parallel=False, parallel_dim=0):
-        super().__init__(ob_space, net, rnn, data_parallel, parallel_dim)
+    def __init__(self, observation_space, net, rnn=False):
+        super().__init__(observation_space, net, rnn)
         self.pd = DeterministicPd()
         self.to(get_device())
 
@@ -41,31 +37,22 @@ class DeterministicSVfunc(BaseSVfunc):
             if hs is None:
                 if self.hs is None:
                     self.hs = self.net.init_hs(batch_size)
-                if self.dp_run:
-                    self.hs = (self.hs[0].unsqueeze(
-                        0), self.hs[1].unsqueeze(0))
                 hs = self.hs
 
             if h_masks is None:
                 h_masks = hs[0].new(time_seq, batch_size, 1).zero_()
             h_masks = h_masks.reshape(time_seq, batch_size, 1)
 
-            if self.dp_run:
-                vs, hs = self.dp_net(obs, hs, h_masks)
-            else:
-                vs, hs = self.net(obs, hs, h_masks)
+            vs, hs = self.net(obs, hs, h_masks)
             self.hs = hs
         else:
-            if self.dp_run:
-                vs = self.dp_net(obs)
-            else:
-                vs = self.net(obs)
+            vs = self.net(obs)
         return vs.squeeze(-1), dict(mean=vs.squeeze(-1), hs=hs)
 
 
 class NormalizedDeterministicSVfunc(DeterministicSVfunc):
-    def __init__(self, ob_space, net):
-        super().__init__(self, ob_space, net)
+    def __init__(self, observation_space, net):
+        super().__init__(self, observation_space, net)
         self.x_mean = torch.zeros(1)
         self.x_std = torch.ones(1)
         self.to(get_device())

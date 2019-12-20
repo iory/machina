@@ -1,0 +1,686 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>machina.algos package &mdash; machina  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="machina.envs package" href="machina.envs.html" />
+    <link rel="prev" title="machina package" href="machina.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> machina
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="machina.html">machina package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="machina.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">machina.algos package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#machina-algos-airl-module">machina.algos.airl module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#machina-algos-behavior-clone-module">machina.algos.behavior_clone module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-machina.algos.ddpg">machina.algos.ddpg module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#machina-algos-diayn-module">machina.algos.diayn module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#machina-algos-diayn-sac-module">machina.algos.diayn_sac module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#machina-algos-gail-module">machina.algos.gail module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#machina-algos-mpc-module">machina.algos.mpc module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#machina-algos-on-pol-teacher-distill-module">machina.algos.on_pol_teacher_distill module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-machina.algos.ppo_clip">machina.algos.ppo_clip module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-machina.algos.ppo_kl">machina.algos.ppo_kl module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#machina-algos-prioritized-ddpg-module">machina.algos.prioritized_ddpg module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-machina.algos.qtopt">machina.algos.qtopt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#machina-algos-r2d2-sac-module">machina.algos.r2d2_sac module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-machina.algos.sac">machina.algos.sac module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-machina.algos.svg">machina.algos.svg module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-machina.algos.trpo">machina.algos.trpo module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-machina.algos.vpg">machina.algos.vpg module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="machina.envs.html">machina.envs package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machina.models.html">machina.models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machina.noise.html">machina.noise package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machina.optims.html">machina.optims package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machina.pds.html">machina.pds package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machina.pols.html">machina.pols package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machina.prepro.html">machina.prepro package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machina.samplers.html">machina.samplers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machina.traj.html">machina.traj package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="machina.vfuncs.html">machina.vfuncs package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="machina.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="machina.html#module-machina.logger">machina.logger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="machina.html#module-machina.loss_functional">machina.loss_functional module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="machina.html#module-machina.utils">machina.utils module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">machina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="machina.html">machina package</a> &raquo;</li>
+        
+      <li>machina.algos package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/machina.algos.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-machina.algos">
+<span id="machina-algos-package"></span><h1>machina.algos package<a class="headerlink" href="#module-machina.algos" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="machina-algos-airl-module">
+<h2>machina.algos.airl module<a class="headerlink" href="#machina-algos-airl-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="machina-algos-behavior-clone-module">
+<h2>machina.algos.behavior_clone module<a class="headerlink" href="#machina-algos-behavior-clone-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-machina.algos.ddpg">
+<span id="machina-algos-ddpg-module"></span><h2>machina.algos.ddpg module<a class="headerlink" href="#module-machina.algos.ddpg" title="Permalink to this headline">¶</a></h2>
+<p>This is implementation of Deep Deterministic Policy Gradient.
+See <a class="reference external" href="https://arxiv.org/abs/1509.02971">https://arxiv.org/abs/1509.02971</a></p>
+<dl class="function">
+<dt id="machina.algos.ddpg.train">
+<code class="descclassname">machina.algos.ddpg.</code><code class="descname">train</code><span class="sig-paren">(</span><em>traj</em>, <em>pol</em>, <em>targ_pol</em>, <em>qf</em>, <em>targ_qf</em>, <em>optim_pol</em>, <em>optim_qf</em>, <em>epoch</em>, <em>batch_size</em>, <em>tau</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/ddpg.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.ddpg.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train function for deep deterministic policy gradient</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>traj</strong> (<a class="reference internal" href="machina.traj.html#machina.traj.traj.Traj" title="machina.traj.traj.Traj"><em>Traj</em></a>) – Off policy trajectory.</li>
+<li><strong>pol</strong> (<em>Pol</em>) – Policy.</li>
+<li><strong>targ_pol</strong> (<em>Pol</em>) – Target Policy.</li>
+<li><strong>qf</strong> (<em>SAVfunction</em>) – Q function.</li>
+<li><strong>targ_qf</strong> (<em>SAVfunction</em>) – Target Q function.</li>
+<li><strong>optim_pol</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Policy.</li>
+<li><strong>optim_qf</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Q function.</li>
+<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of iteration.</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of batches.</li>
+<li><strong>tau</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Target updating rate.</li>
+<li><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Discounting rate.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result_dict</strong> – Dictionary which contains losses information.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="machina-algos-diayn-module">
+<h2>machina.algos.diayn module<a class="headerlink" href="#machina-algos-diayn-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="machina-algos-diayn-sac-module">
+<h2>machina.algos.diayn_sac module<a class="headerlink" href="#machina-algos-diayn-sac-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="machina-algos-gail-module">
+<h2>machina.algos.gail module<a class="headerlink" href="#machina-algos-gail-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="machina-algos-mpc-module">
+<h2>machina.algos.mpc module<a class="headerlink" href="#machina-algos-mpc-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="machina-algos-on-pol-teacher-distill-module">
+<h2>machina.algos.on_pol_teacher_distill module<a class="headerlink" href="#machina-algos-on-pol-teacher-distill-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-machina.algos.ppo_clip">
+<span id="machina-algos-ppo-clip-module"></span><h2>machina.algos.ppo_clip module<a class="headerlink" href="#module-machina.algos.ppo_clip" title="Permalink to this headline">¶</a></h2>
+<p>This is an implementation of Proximal Policy Optimization
+in which gradient is clipped by the size especially.
+See <a class="reference external" href="https://arxiv.org/abs/1707.06347">https://arxiv.org/abs/1707.06347</a></p>
+<dl class="function">
+<dt id="machina.algos.ppo_clip.train">
+<code class="descclassname">machina.algos.ppo_clip.</code><code class="descname">train</code><span class="sig-paren">(</span><em>traj</em>, <em>pol</em>, <em>vf</em>, <em>optim_pol</em>, <em>optim_vf</em>, <em>epoch</em>, <em>batch_size</em>, <em>num_epi_per_seq=1</em>, <em>clip_param=0.2</em>, <em>ent_beta=0.001</em>, <em>max_grad_norm=0.5</em>, <em>clip_vfunc=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/ppo_clip.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.ppo_clip.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train function for proximal policy optimization (clip).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>traj</strong> (<a class="reference internal" href="machina.traj.html#machina.traj.traj.Traj" title="machina.traj.traj.Traj"><em>Traj</em></a>) – On policy trajectory.</li>
+<li><strong>pol</strong> (<em>Pol</em>) – Policy.</li>
+<li><strong>vf</strong> (<em>SVfunction</em>) – V function.</li>
+<li><strong>optim_pol</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Policy.</li>
+<li><strong>optim_vf</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for V function.</li>
+<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of iteration.</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of batches.</li>
+<li><strong>num_epi_per_seq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of episodes in one sequence for rnn.</li>
+<li><strong>clip_param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Clipping ratio of objective function.</li>
+<li><strong>ent_beta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Entropy coefficient.</li>
+<li><strong>max_grad_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum gradient norm.</li>
+<li><strong>clip_vfunc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, vfunc is also updated by clipped objective function.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result_dict</strong> – Dictionary which contains losses information.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.ppo_clip.update_pol">
+<code class="descclassname">machina.algos.ppo_clip.</code><code class="descname">update_pol</code><span class="sig-paren">(</span><em>pol</em>, <em>optim_pol</em>, <em>batch</em>, <em>clip_param</em>, <em>ent_beta</em>, <em>max_grad_norm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/ppo_clip.html#update_pol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.ppo_clip.update_pol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update function for Policy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pol</strong> (<em>Pol</em>) – Policy.</li>
+<li><strong>optim_pol</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Policy.</li>
+<li><strong>batch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Batch of trajectory</li>
+<li><strong>clip_param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Clipping ratio of objective function.</li>
+<li><strong>ent_beta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Entropy coefficient.</li>
+<li><strong>max_grad_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum gradient norm.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pol_loss</strong> – Value of loss function.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.ppo_clip.update_vf">
+<code class="descclassname">machina.algos.ppo_clip.</code><code class="descname">update_vf</code><span class="sig-paren">(</span><em>vf</em>, <em>optim_vf</em>, <em>batch</em>, <em>clip_param</em>, <em>clip</em>, <em>max_grad_norm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/ppo_clip.html#update_vf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.ppo_clip.update_vf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update function for V function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vf</strong> (<em>SVfunction</em>) – V function.</li>
+<li><strong>optim_vf</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for V function.</li>
+<li><strong>batch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Batch of trajectory</li>
+<li><strong>clip_param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Clipping ratio of objective function.</li>
+<li><strong>clip</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, vfunc is also updated by clipped objective function.</li>
+<li><strong>max_grad_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum gradient norm.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>vf_loss</strong> – Value of loss function.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-machina.algos.ppo_kl">
+<span id="machina-algos-ppo-kl-module"></span><h2>machina.algos.ppo_kl module<a class="headerlink" href="#module-machina.algos.ppo_kl" title="Permalink to this headline">¶</a></h2>
+<p>This is an implementation of Proximal Policy Optimization
+in which gradient is clipped by the KL divergence especially.
+See <a class="reference external" href="https://arxiv.org/abs/1707.06347">https://arxiv.org/abs/1707.06347</a></p>
+<dl class="function">
+<dt id="machina.algos.ppo_kl.train">
+<code class="descclassname">machina.algos.ppo_kl.</code><code class="descname">train</code><span class="sig-paren">(</span><em>traj</em>, <em>pol</em>, <em>vf</em>, <em>kl_beta</em>, <em>kl_targ</em>, <em>optim_pol</em>, <em>optim_vf</em>, <em>epoch</em>, <em>batch_size</em>, <em>max_grad_norm</em>, <em>num_epi_per_seq=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/ppo_kl.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.ppo_kl.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train function for proximal policy optimization (kl).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>traj</strong> (<a class="reference internal" href="machina.traj.html#machina.traj.traj.Traj" title="machina.traj.traj.Traj"><em>Traj</em></a>) – On policy trajectory.</li>
+<li><strong>pol</strong> (<em>Pol</em>) – Policy.</li>
+<li><strong>vf</strong> (<em>SVfunction</em>) – V function.</li>
+<li><strong>kl_beta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – KL divergence coefficient.</li>
+<li><strong>kl_targ</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Target of KL divergence.</li>
+<li><strong>optim_pol</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Policy.</li>
+<li><strong>optim_vf</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for V function.</li>
+<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of iteration.</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of batches.</li>
+<li><strong>max_grad_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum gradient norm.</li>
+<li><strong>num_epi_per_seq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of episodes in one sequence for rnn.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result_dict</strong> – Dictionary which contains losses information.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.ppo_kl.update_pol">
+<code class="descclassname">machina.algos.ppo_kl.</code><code class="descname">update_pol</code><span class="sig-paren">(</span><em>pol</em>, <em>optim_pol</em>, <em>batch</em>, <em>kl_beta</em>, <em>max_grad_norm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/ppo_kl.html#update_pol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.ppo_kl.update_pol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.ppo_kl.update_vf">
+<code class="descclassname">machina.algos.ppo_kl.</code><code class="descname">update_vf</code><span class="sig-paren">(</span><em>vf</em>, <em>optim_vf</em>, <em>batch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/ppo_kl.html#update_vf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.ppo_kl.update_vf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="machina-algos-prioritized-ddpg-module">
+<h2>machina.algos.prioritized_ddpg module<a class="headerlink" href="#machina-algos-prioritized-ddpg-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-machina.algos.qtopt">
+<span id="machina-algos-qtopt-module"></span><h2>machina.algos.qtopt module<a class="headerlink" href="#module-machina.algos.qtopt" title="Permalink to this headline">¶</a></h2>
+<p>This is an implementation of QT-Opt.
+<a class="reference external" href="https://arxiv.org/abs/1806.10293">https://arxiv.org/abs/1806.10293</a></p>
+<dl class="function">
+<dt id="machina.algos.qtopt.train">
+<code class="descclassname">machina.algos.qtopt.</code><code class="descname">train</code><span class="sig-paren">(</span><em>traj</em>, <em>qf</em>, <em>lagged_qf</em>, <em>targ_qf1</em>, <em>targ_qf2</em>, <em>optim_qf</em>, <em>epoch</em>, <em>batch_size</em>, <em>tau=0.9999</em>, <em>gamma=0.9</em>, <em>loss_type='mse'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/qtopt.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.qtopt.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train function for qtopt</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>traj</strong> (<a class="reference internal" href="machina.traj.html#machina.traj.traj.Traj" title="machina.traj.traj.Traj"><em>Traj</em></a>) – Off policy trajectory.</li>
+<li><strong>qf</strong> (<em>SAVfunction</em>) – Q function.</li>
+<li><strong>lagged_qf</strong> (<em>SAVfunction</em>) – Lagged Q function.</li>
+<li><strong>targ_qf1</strong> (<em>CEMSAVfunction</em>) – Target Q function.</li>
+<li><strong>targ_qf2</strong> (<em>CEMSAVfunction</em>) – Lagged Target Q function.</li>
+<li><strong>optim_qf</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Q function.</li>
+<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of iteration.</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of batches.</li>
+<li><strong>tau</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Target updating rate.</li>
+<li><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Discounting rate.</li>
+<li><strong>loss_type</strong> (<em>string</em>) – Type of belleman loss.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result_dict</strong> – Dictionary which contains losses information.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="machina-algos-r2d2-sac-module">
+<h2>machina.algos.r2d2_sac module<a class="headerlink" href="#machina-algos-r2d2-sac-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-machina.algos.sac">
+<span id="machina-algos-sac-module"></span><h2>machina.algos.sac module<a class="headerlink" href="#module-machina.algos.sac" title="Permalink to this headline">¶</a></h2>
+<p>This is an implementation of Soft Actor Critic.
+See <a class="reference external" href="https://arxiv.org/abs/1801.01290">https://arxiv.org/abs/1801.01290</a></p>
+<dl class="function">
+<dt id="machina.algos.sac.train">
+<code class="descclassname">machina.algos.sac.</code><code class="descname">train</code><span class="sig-paren">(</span><em>traj</em>, <em>pol</em>, <em>qf</em>, <em>targ_qf</em>, <em>log_alpha</em>, <em>optim_pol</em>, <em>optim_qf</em>, <em>optim_alpha</em>, <em>epoch</em>, <em>batch_size</em>, <em>tau</em>, <em>gamma</em>, <em>sampling</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/sac.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.sac.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train function for soft actor critic.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>traj</strong> (<a class="reference internal" href="machina.traj.html#machina.traj.traj.Traj" title="machina.traj.traj.Traj"><em>Traj</em></a>) – Off policy trajectory.</li>
+<li><strong>pol</strong> (<em>Pol</em>) – Policy.</li>
+<li><strong>qf</strong> (<em>SAVfunction</em>) – Q function.</li>
+<li><strong>targ_qf</strong> (<em>SAVfunction</em>) – Target Q function.</li>
+<li><strong>log_alpha</strong> (<em>torch.Tensor</em>) – Temperature parameter of entropy.</li>
+<li><strong>optim_pol</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Policy.</li>
+<li><strong>optim_qf</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Q function.</li>
+<li><strong>optim_alpha</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for alpha.</li>
+<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of iteration.</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of batches.</li>
+<li><strong>tau</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Target updating rate.</li>
+<li><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Discounting rate.</li>
+<li><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of samping in calculating expectation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result_dict</strong> – Dictionary which contains losses information.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-machina.algos.svg">
+<span id="machina-algos-svg-module"></span><h2>machina.algos.svg module<a class="headerlink" href="#module-machina.algos.svg" title="Permalink to this headline">¶</a></h2>
+<p>This is an implementation of Stochastic Value Gradient.
+See <a class="reference external" href="https://arxiv.org/abs/1510.09142">https://arxiv.org/abs/1510.09142</a></p>
+<dl class="function">
+<dt id="machina.algos.svg.train">
+<code class="descclassname">machina.algos.svg.</code><code class="descname">train</code><span class="sig-paren">(</span><em>traj</em>, <em>pol</em>, <em>targ_pol</em>, <em>qf</em>, <em>targ_qf</em>, <em>optim_pol</em>, <em>optim_qf</em>, <em>epoch</em>, <em>batch_size</em>, <em>tau</em>, <em>gamma</em>, <em>sampling</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/svg.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.svg.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train function for deep deterministic policy gradient</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>traj</strong> (<a class="reference internal" href="machina.traj.html#machina.traj.traj.Traj" title="machina.traj.traj.Traj"><em>Traj</em></a>) – Off policy trajectory.</li>
+<li><strong>pol</strong> (<em>Pol</em>) – Policy.</li>
+<li><strong>targ_pol</strong> (<em>Pol</em>) – Target Policy.</li>
+<li><strong>qf</strong> (<em>SAVfunction</em>) – Q function.</li>
+<li><strong>targ_qf</strong> (<em>SAVfunction</em>) – Target Q function.</li>
+<li><strong>optim_pol</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Policy.</li>
+<li><strong>optim_qf</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Q function.</li>
+<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of iteration.</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of batches.</li>
+<li><strong>tau</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Target updating rate.</li>
+<li><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Discounting rate.</li>
+<li><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of samping in calculating expectation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result_dict</strong> – Dictionary which contains losses information.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-machina.algos.trpo">
+<span id="machina-algos-trpo-module"></span><h2>machina.algos.trpo module<a class="headerlink" href="#module-machina.algos.trpo" title="Permalink to this headline">¶</a></h2>
+<p>This is an implementation of Trust Region Policy Optimization.
+See <a class="reference external" href="https://arxiv.org/abs/1502.05477">https://arxiv.org/abs/1502.05477</a></p>
+<dl class="function">
+<dt id="machina.algos.trpo.conjugate_gradients">
+<code class="descclassname">machina.algos.trpo.</code><code class="descname">conjugate_gradients</code><span class="sig-paren">(</span><em>Avp</em>, <em>b</em>, <em>nsteps</em>, <em>residual_tol=1e-10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/trpo.html#conjugate_gradients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.trpo.conjugate_gradients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculating conjugate gradient</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.trpo.linesearch">
+<code class="descclassname">machina.algos.trpo.</code><code class="descname">linesearch</code><span class="sig-paren">(</span><em>pol</em>, <em>batch</em>, <em>f</em>, <em>x</em>, <em>fullstep</em>, <em>expected_improve_rate</em>, <em>max_backtracks=10</em>, <em>accept_ratio=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/trpo.html#linesearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.trpo.linesearch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.trpo.make_kl">
+<code class="descclassname">machina.algos.trpo.</code><code class="descname">make_kl</code><span class="sig-paren">(</span><em>pol</em>, <em>batch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/trpo.html#make_kl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.trpo.make_kl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.trpo.train">
+<code class="descclassname">machina.algos.trpo.</code><code class="descname">train</code><span class="sig-paren">(</span><em>traj</em>, <em>pol</em>, <em>vf</em>, <em>optim_vf</em>, <em>epoch=5</em>, <em>batch_size=64</em>, <em>num_epi_per_seq=1</em>, <em>max_kl=0.01</em>, <em>num_cg=10</em>, <em>damping=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/trpo.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.trpo.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train function for trust region policy optimization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>traj</strong> (<a class="reference internal" href="machina.traj.html#machina.traj.traj.Traj" title="machina.traj.traj.Traj"><em>Traj</em></a>) – On policy trajectory.</li>
+<li><strong>pol</strong> (<em>Pol</em>) – Policy.</li>
+<li><strong>vf</strong> (<em>SVfunction</em>) – V function.</li>
+<li><strong>optim_vf</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for V function.</li>
+<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of iteration.</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of batches.</li>
+<li><strong>num_epi_per_seq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of episodes in one sequence for rnn.</li>
+<li><strong>max_kl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Limit of KL divergence.</li>
+<li><strong>num_cg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of iteration in conjugate gradient computation.</li>
+<li><strong>damping</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Damping parameter for Hessian Vector Product.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result_dict</strong> – Dictionary which contains losses information.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.trpo.update_pol">
+<code class="descclassname">machina.algos.trpo.</code><code class="descname">update_pol</code><span class="sig-paren">(</span><em>pol</em>, <em>batch</em>, <em>make_kl=&lt;function make_kl&gt;</em>, <em>max_kl=0.01</em>, <em>damping=0.1</em>, <em>num_cg=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/trpo.html#update_pol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.trpo.update_pol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.trpo.update_vf">
+<code class="descclassname">machina.algos.trpo.</code><code class="descname">update_vf</code><span class="sig-paren">(</span><em>vf</em>, <em>optim_vf</em>, <em>batch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/trpo.html#update_vf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.trpo.update_vf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-machina.algos.vpg">
+<span id="machina-algos-vpg-module"></span><h2>machina.algos.vpg module<a class="headerlink" href="#module-machina.algos.vpg" title="Permalink to this headline">¶</a></h2>
+<p>This is an implementation of Vanilla Policy Gradient.</p>
+<dl class="function">
+<dt id="machina.algos.vpg.train">
+<code class="descclassname">machina.algos.vpg.</code><code class="descname">train</code><span class="sig-paren">(</span><em>traj</em>, <em>pol</em>, <em>vf</em>, <em>optim_pol</em>, <em>optim_vf</em>, <em>epoch</em>, <em>batch_size</em>, <em>large_batch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/vpg.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.vpg.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train function for vanila policy gradient.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>traj</strong> (<a class="reference internal" href="machina.traj.html#machina.traj.traj.Traj" title="machina.traj.traj.Traj"><em>Traj</em></a>) – On policy trajectory.</li>
+<li><strong>pol</strong> (<em>Pol</em>) – Policy.</li>
+<li><strong>vf</strong> (<em>SVfunction</em>) – V function.</li>
+<li><strong>optim_pol</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for Policy.</li>
+<li><strong>optim_vf</strong> (<em>torch.optim.Optimizer</em>) – Optimizer for V function.</li>
+<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of iteration.</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Number of batches.</li>
+<li><strong>larget_batch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True, batch is provided as whole trajectory.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result_dict</strong> – Dictionary which contains losses information.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.vpg.update_pol">
+<code class="descclassname">machina.algos.vpg.</code><code class="descname">update_pol</code><span class="sig-paren">(</span><em>pol</em>, <em>optim_pol</em>, <em>batch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/vpg.html#update_pol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.vpg.update_pol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="machina.algos.vpg.update_vf">
+<code class="descclassname">machina.algos.vpg.</code><code class="descname">update_vf</code><span class="sig-paren">(</span><em>vf</em>, <em>optim_vf</em>, <em>batch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/machina/algos/vpg.html#update_vf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#machina.algos.vpg.update_vf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="machina.envs.html" class="btn btn-neutral float-right" title="machina.envs package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="machina.html" class="btn btn-neutral float-left" title="machina package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017-2019 DeepX, Inc.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
